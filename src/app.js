@@ -6,6 +6,7 @@ import { editPage } from './views/edit.js';
 import { loginPage } from './views/login.js';
 import { registerPage } from './views/register.js';
 
+
 const root = document.querySelector('div.container');
 
 page(decorateContext);  // executes before accessing a link => dependency injection

@@ -1,42 +1,23 @@
-import { clearUserData, getUserData, setUserData } from "./utils";
+import { clearUserData, getUserData, setUserData } from "../utils.js";
 
-host = 'http://localhost:3030'
+const host = 'http://localhost:3030';
 
-async function request(method, url, data){
-    const options = {
-        method,
-        headers: {}
-    };
-
-    if(data != undefined){
-        options.headers['Cotent-type'] = 'application/json';
-        options.body = JSON.stringify(data);
-    }
-
-    const user = getUserData(data);
-
-    if (user) {
-        const token = user.accessToken;
-        options.headers['X-Authorization'] = token;
-    }
-
-
-
+async function request(url, options){
     try {
         const response = await fetch(host + url, options);
 
-        if(response.ok != true){
-            if(response.status == 403){  // invalid session
+        if (response.ok != true){
+            if (response.status == 403){  // invalid session
                 clearUserData();
             }
             const error = await response.json();
             throw new Error(error.message);
         }
 
-        if(response.status == 204){
+        if (response.status == 204){
             return response; // empty response parsed to json returns error
         } else {
-                return response.json();
+            return response.json();
         }
 
     } catch (err) {
@@ -45,13 +26,43 @@ async function request(method, url, data){
     }
 }
 
-const get = request.bind(null, 'get');
-const post = request.bind(null, 'post');
-const put = request.bind(null, 'put');
-const del = request.bind(null, 'delete');
+function createOptions(method = 'get', data){
+    const options = {
+        method,
+        headers: {}
+    };
 
-async function login(email, password) {
-    const result = await post('users/login', { email, password });
+    if(data != undefined){
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(data);
+    }
+
+    const userData = getUserData();
+    
+    if (userData != null) {
+        options.headers['X-Authorization'] = userData.token;
+    }
+    return options;
+}
+
+export async function get(url) {
+    return request(url, createOptions());
+}
+
+export async function post(url, data) {
+    return request(url, createOptions('post', data));
+}
+
+export async function put(url, data) {
+    return request(url, createOptions('put', data));
+}
+
+export async function del(url) {
+    return request(url, createOptions('delete'));
+}
+
+export async function login(email, password) {
+    const result = await post('/users/login', { email, password });
 
     const userData = {
         email: result.email,
@@ -61,8 +72,8 @@ async function login(email, password) {
     setUserData(userData);
 }
 
-async function register(email, password) {
-    const result = await post('users/register', { email, password });
+export async function register(email, password) {
+    const result = await post('/users/register', { email, password });
 
     const userData = {
         email: result.email,
@@ -72,17 +83,8 @@ async function register(email, password) {
     setUserData(userData);
 }
 
-async function logout(){
-    await get('users/logout');
+export async function logout(){
+    await get('/users/logout');
     clearUserData();
 }
 
-export {
-    get,
-    post,
-    put,
-    del as delete,
-    login,
-    register,
-    logout,
-}
