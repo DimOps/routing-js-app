@@ -1,4 +1,4 @@
-import { getItemDetails } from "../api/data.js";
+import { deleteItem, getItemDetails } from "../api/data.js";
 import { html, until } from "../bundler.js";
 import { getUserData } from "../utils.js";
 
@@ -12,7 +12,7 @@ const detailsTemplate = (itemPromise) => html`
     ${until(itemPromise, html`<p>Loading &hellip;</p>`)}
 </div> `;
 
-const itemTemplate = (item, isOwner) => html`
+const itemTemplate = (item, isOwner, onDelete) => html`
 <div class="col-md-4">
     <div class="card text-white bg-primary">
         <div class="card-body">
@@ -29,17 +29,24 @@ const itemTemplate = (item, isOwner) => html`
     <p>Material: <span>${item.material}</span></p>
     ${ isOwner ? html`<div>
         <a href=${`/edit/${item._id}`} class="btn btn-info">Edit</a>
-        <a href="javascript:void(0)" class="btn btn-red">Delete</a>
+        <a @click=${onDelete} href="javascript:void(0)" class="btn btn-red">Delete</a>
     </div>` : null}
 
 </div>`;
 
 export function detailsPage(ctx){
-    ctx.render(detailsTemplate(loadItem(ctx.params.id)));
+    ctx.render(detailsTemplate(loadItem(ctx.params.id, onDelete)));
     
+    async function onDelete() {
+        const choice = confirm('Are you sure you want to delete this?');
+        if (choice){
+            await deleteItem(ctx.params.id);
+            ctx.page.redirect('/');
+        }
+    }
 }
 
-async function loadItem(id) {
+async function loadItem(id, onDelete) {
     const item = await getItemDetails(id);
     const user = getUserData();
     let isOwner = false
@@ -47,5 +54,5 @@ async function loadItem(id) {
         isOwner = true;
     }
     
-    return itemTemplate(item, isOwner);
+    return itemTemplate(item, isOwner, onDelete);
 }
