@@ -1,5 +1,6 @@
-import { getAll } from "../api/data.js";
+import { getAll, getMyItems } from "../api/data.js";
 import { html, until } from "../bundler.js";
+import { getUserData } from "../utils.js";
 
 
 const catalogTemplate = (dataPromise) => html`
@@ -33,12 +34,18 @@ const itemTemplate = (item) => html`
 
 
 export function catalogPage(ctx){
-    ctx.render(catalogTemplate(loadItems()));
+    const userPage = ctx.pathname == '/my-furniture';
+    ctx.render(catalogTemplate(loadItems(userPage)));
 }
 
 
-async function loadItems() {
-    const items = await getAll();
-
+async function loadItems(userPage) {
+    let items = [];
+    if (userPage){
+        const userId = getUserData().id
+        items = await getMyItems(userId);
+    } else {
+        items = await getAll();
+    }
     return items.map(itemTemplate);
 }
