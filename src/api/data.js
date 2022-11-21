@@ -9,8 +9,8 @@ const endpoints = {
     byId: '/data/catalog/',
     myItems: (userId) => `/data/catalog?where=_ownerId%3D%22${userId}%22`,
     create: '/data/catalog',
-    edit: '/data/catalog',
-    delete: '/data/catalog',
+    edit: '/data/catalog/',
+    delete: '/data/catalog/',
 }
 
 export async function getAll() {
@@ -34,6 +34,6 @@ export async function editItem(id, data) {
  } 
 
 export async function deleteItem(id) {
-    return api.delete(endpoints.delete + id);
+    return api.del(endpoints.delete + id);
  } 
 
