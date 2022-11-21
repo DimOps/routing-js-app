@@ -2,7 +2,7 @@ import { getAll } from "../api/data.js";
 import { html, until } from "../bundler.js";
 
 
-const catalogTemeplate = (dataPromise) => html`
+const catalogTemplate = (dataPromise) => html`
 <div class="row space-top">
     <div class="col-md-12">
         <h1>Welcome to Furniture System</h1>
@@ -33,7 +33,7 @@ const itemTemplate = (item) => html`
 
 
 export function catalogPage(ctx){
-    ctx.render(catalogTemeplate(loadItems()));
+    ctx.render(catalogTemplate(loadItems()));
 }
 
 
