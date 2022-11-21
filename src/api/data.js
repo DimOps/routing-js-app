@@ -13,7 +13,7 @@ export async function getAll() {
     return api.get(endpoints.all);
 }
 
-export async function getDetails(id) {
+export async function getItemDetails(id) {
     return api.get(endpoints.byId + id);
 }
 
