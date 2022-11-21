@@ -23,6 +23,6 @@ page.start();
 
 function decorateContext (ctx, next) {
     ctx.render = (content) => render(content, root);
-
+    
     next();
 }
