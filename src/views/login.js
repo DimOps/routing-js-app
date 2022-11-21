@@ -1,14 +1,15 @@
+import { login } from "../api/api.js";
 import { html } from "../bundler.js";
 
 
-const loginTemplate = html`
+const loginTemplate = (onSubmit) => html`
 <div class="row space-top">
     <div class="col-md-12">
         <h1>Login User</h1>
         <p>Please fill all fields.</p>
     </div>
 </div>
-<form>
+<form @submit=${onSubmit}>
     <div class="row space-top">
         <div class="col-md-4">
             <div class="form-group">
@@ -27,5 +28,18 @@ const loginTemplate = html`
 
 
 export function loginPage(ctx){
-    ctx.render(loginTemplate);
+    ctx.render(loginTemplate(onSubmit));
+
+    async function onSubmit(e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        await login(email, password);
+
+        ctx.page.redirect('/');
+    }
 }
