@@ -3,11 +3,17 @@ import { html, until } from "../bundler.js";
 import { getUserData } from "../utils.js";
 
 
-const catalogTemplate = (dataPromise) => html`
+const catalogTemplate = (dataPromise, userPage) => html`
 <div class="row space-top">
     <div class="col-md-12">
-        <h1>Welcome to Furniture System</h1>
-        <p>Select furniture from the catalog to view details.</p>
+        ${userPage 
+            ? html`
+                <h1>My Furniture</h1>
+                <p>This is a list of your publications.</p>` 
+            : html`
+                <h1>Welcome to Furniture System</h1>
+                <p>Select furniture from the catalog to view details.</p>`}
+        
     </div>
 </div>
 <div class="row space-top">
@@ -35,7 +41,7 @@ const itemTemplate = (item) => html`
 
 export function catalogPage(ctx){
     const userPage = ctx.pathname == '/my-furniture';
-    ctx.render(catalogTemplate(loadItems(userPage)));
+    ctx.render(catalogTemplate(loadItems(userPage), userPage));
 }
 
 
