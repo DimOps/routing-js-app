@@ -17,7 +17,7 @@ page(decorateContext);  // executes before accessing a link => dependency inject
 page('/', catalogPage);
 page('/details/:id', detailsPage);
 page('/create', createPage);
-page('/edit', editPage);
+page('/edit/:id', editPage);
 page('/login', loginPage);
 page('/register', registerPage);
 page('/my-furniture', catalogPage);

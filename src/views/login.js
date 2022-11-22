@@ -46,6 +46,7 @@ export function loginPage(ctx){
         try {
             await login(email, password);
             ctx.updateNav();
+            e.target.reset();
             ctx.page.redirect('/');
         } catch (err) {
             update(err.message);

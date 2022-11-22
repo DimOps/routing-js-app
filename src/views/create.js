@@ -75,6 +75,7 @@ export function createPage(ctx) {
             dataObject.price = Number(dataObject.price);
 
             const item = await createItem(dataObject);
+            e.target.reset();
             ctx.page.redirect('/details/' + item._id);
         } catch (err) {
             const message = err.message || err.error.message;
